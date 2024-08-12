@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  rosbot:
+    container_name: rosbot
+    image: rosbot_codes
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    privileged: true
+    user: davood
+    network_mode: host
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - ./codes/:/ros2_ws/codes/:rw
+      - ./sync.sh:/sync.sh:rw
+      - ./backsync.sh:/backsync.sh:rw
+    command: /bin/bash
+    working_dir: /ros2_ws/src
