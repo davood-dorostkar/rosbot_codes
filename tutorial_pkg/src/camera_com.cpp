@@ -7,10 +7,10 @@ using namespace std::placeholders;
 class MyNode : public rclcpp::Node
 {
 public:
-   MyNode() : Node("camera_sub_node")
+   MyNode() : Node("camera_com_node")
    {
-    //   subscriber_ = create_subscription<sensor_msgs::msg::Image>(
-    //      "/image", rclcpp::SensorDataQoS(), std::bind(&MyNode::image_callback, this, _1));
+      subscriber_ = create_subscription<sensor_msgs::msg::Image>(
+         "/image", rclcpp::SensorDataQoS(), std::bind(&MyNode::image_callback, this, _1));
       publisher_ = create_publisher<std_msgs::msg::UInt8>("/brightness", rclcpp::SensorDataQoS());
 
       RCLCPP_INFO(get_logger(), "Node started!");
@@ -47,21 +47,18 @@ int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
   auto node = std::make_shared<MyNode>();
-//   rclcpp::spin(node);
 
-  rclcpp::Rate loop_rate(2);
+  // event-based subscribe & publish
+  rclcpp::spin(node);
 
-  while (rclcpp::ok())
-  {
-    node->publish_fixed();
-    loop_rate.sleep();
-  }
-
-//   while(true)
+//   // loop-based publish
+//   rclcpp::Rate loop_rate(2);
+//   while (rclcpp::ok())
 //   {
-//      node->publish_fixed();
-
+//     node->publish_fixed();
+//     loop_rate.sleep();
 //   }
+
   rclcpp::shutdown();
   return 0;
 }

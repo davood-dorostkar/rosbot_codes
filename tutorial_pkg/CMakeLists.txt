@@ -19,14 +19,22 @@ find_package(std_msgs REQUIRED)
 add_executable(my_first_node src/my_first_node.cpp)
 ament_target_dependencies(my_first_node rclcpp)
 
-add_executable(camera_sub src/camera_sub.cpp)
-ament_target_dependencies(camera_sub sensor_msgs std_msgs rclcpp)
+add_executable(camera_com src/camera_com.cpp)
+ament_target_dependencies(camera_com sensor_msgs std_msgs rclcpp)
+
+add_executable(service src/service.cpp)
+ament_target_dependencies(service sensor_msgs std_msgs rclcpp)
 
 install(TARGETS
   my_first_node
-  camera_sub
+  camera_com
+  service
   DESTINATION lib/${PROJECT_NAME}
 )
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

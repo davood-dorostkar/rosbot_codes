@@ -12,6 +12,8 @@ RUN apt-get update --fix-missing && apt-get install -y \
     ros-$ROS_DISTRO-rviz2 \
     rsync \
     sudo 
+RUN apt-get update && apt-get install -y \
+    ros-$ROS_DISTRO-image-view
 RUN useradd -m -s /bin/bash -G sudo davood
 RUN echo "davood:1234" | chpasswd 
 RUN chown davood:davood -R /ros2_ws /ros_entrypoint.sh

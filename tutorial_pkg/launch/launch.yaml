@@ -1,0 +1,11 @@
+launch:
+  - node:
+      pkg: "tutorial_pkg"
+      exec: "service"
+      name: "service_node"
+      remap:
+        - from: "/image"
+          to: "/camera/color/image_raw"
+      param:
+        - name: "timer_period"
+          value: 2
