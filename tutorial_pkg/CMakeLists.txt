@@ -15,6 +15,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(my_first_node src/my_first_node.cpp)
 ament_target_dependencies(my_first_node rclcpp)
@@ -25,10 +26,14 @@ ament_target_dependencies(camera_com sensor_msgs std_msgs rclcpp)
 add_executable(service src/service.cpp)
 ament_target_dependencies(service sensor_msgs std_msgs rclcpp)
 
+add_executable(camera_saver src/camera_saver.cpp)
+ament_target_dependencies(camera_saver sensor_msgs std_msgs std_srvs rclcpp)
+
 install(TARGETS
   my_first_node
   camera_com
   service
+  camera_saver
   DESTINATION lib/${PROJECT_NAME}
 )
 
