@@ -4,6 +4,7 @@
 #include "std_msgs/msg/u_int8.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_srvs/srv/empty.hpp"
+#include "std_srvs/srv/trigger.hpp"
 
 using namespace std::placeholders;
 using namespace std::chrono_literals;
@@ -19,6 +20,7 @@ public:
         pub = create_publisher<std_msgs::msg::UInt8>("/brightness", rclcpp::SensorDataQoS());
         timer = create_wall_timer(period, std::bind(&CameraSaver::timerCallback, this));
         client = create_client<std_srvs::srv::Empty>("/save");
+        server = create_service<std_srvs::srv::Trigger>("/image_counter", std::bind(&CameraSaver::serverCallback, this, _1, _2));
 
         RCLCPP_INFO(get_logger(), "Node started!");
     }
@@ -27,6 +29,8 @@ private:
     rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr pub;
     rclcpp::TimerBase::SharedPtr timer;
     rclcpp::Client<std_srvs::srv::Empty>::SharedPtr client;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr server;
+    uint8_t counter = 0;
 
     void imageCallback(const sensor_msgs::msg::Image::SharedPtr image)
     {
@@ -50,6 +54,13 @@ private:
         }
         auto request = std::make_shared<std_srvs::srv::Empty::Request>();
         auto future = client->async_send_request(request);
+        counter++;
+    }
+
+    void serverCallback(const std_srvs::srv::Trigger::Request::SharedPtr request, std_srvs::srv::Trigger::Response::SharedPtr response)
+    {
+        response->success = 1;
+        response->message = "saved messages: " + std::to_string(counter);
     }
 };
 
