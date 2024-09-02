@@ -16,6 +16,13 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(cv_bridge REQUIRED)
+
+include_directories(
+  include
+)
 
 add_executable(my_first_node src/my_first_node.cpp)
 ament_target_dependencies(my_first_node rclcpp)
@@ -29,11 +36,19 @@ ament_target_dependencies(service sensor_msgs std_msgs rclcpp)
 add_executable(camera_saver src/camera_saver.cpp)
 ament_target_dependencies(camera_saver sensor_msgs std_msgs std_srvs rclcpp)
 
+add_executable(driver src/driver.cpp)
+ament_target_dependencies(driver geometry_msgs rclcpp)
+
+add_executable(tracker src/tracker.cpp)
+ament_target_dependencies(tracker rclcpp OpenCV cv_bridge geometry_msgs sensor_msgs std_msgs)
+
 install(TARGETS
   my_first_node
   camera_com
   service
   camera_saver
+  driver
+  tracker
   DESTINATION lib/${PROJECT_NAME}
 )
 

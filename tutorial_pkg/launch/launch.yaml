@@ -1,28 +1,39 @@
 launch:
   - node:
       pkg: "tutorial_pkg"
-      exec: "camera_saver"
-      name: "camera_saver_node"
-      remap:
-        - from: "/image"
-          to: "/camera/color/image_raw"
+      exec: "driver"
+      name: "controller"
       param:
-        - name: "period"
-          value: 3
-  - node:
-      pkg: "image_view"
-      exec: "image_saver"
-      name: "image_saver"
-      remap:
-        - from: "/image"
-          to: "/camera/color/image_raw"
-        - from: "/camera_info"
-          to: "/camera/color/camera_info"
-      param:
-        - name: "save_all_image"
-          value: false
-        - name: "filename_format"
-          value: "./saved_images/image%04d.%s"
+        - name: "interval"
+          value: 100
+          
+# image saver
+  # - node:
+  #     pkg: "tutorial_pkg"
+  #     exec: "camera_saver"
+  #     name: "camera_saver_node"
+  #     remap:
+  #       - from: "/image"
+  #         to: "/camera/color/image_raw"
+  #     param:
+  #       - name: "period"
+  #         value: 3
+  # - node:
+  #     pkg: "image_view"
+  #     exec: "image_saver"
+  #     name: "image_saver"
+  #     remap:
+  #       - from: "/image"
+  #         to: "/camera/color/image_raw"
+  #       - from: "/camera_info"
+  #         to: "/camera/color/camera_info"
+  #     param:
+  #       - name: "save_all_image"
+  #         value: false
+  #       - name: "filename_format"
+  #         value: "./saved_images/image%04d.%s"
+
+# first node
   # - node:
   #     pkg: "tutorial_pkg"
   #     exec: "service"
