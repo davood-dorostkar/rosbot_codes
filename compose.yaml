@@ -24,14 +24,6 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./tutorial_pkg:/ros2_ws/src/tutorial_pkg:rw
-      # - ./codes/:/codes/:rw
-      # - ./sync.sh:/sync.sh:rw
-      # - ./backsync.sh/:/backsync.sh/:rw
-    # command: >
-    #   ros2 launch rosbot_xl_gazebo simulation.launch.py
-    #   mecanum:=${MECANUM:-False}
-    #   camera_model:=intel_realsense_d435
-    # command: /bin/bash
     tty: true
     stdin_open: true
     entrypoint: /bin/bash
