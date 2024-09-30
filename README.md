@@ -4,13 +4,13 @@ it is based on the Husarion simulation in [this tutorial](https://husarion.com/t
 ![](/rosbot-gazebo.png)
 
 ## Usage
-run gazebo simulator
+run and enter container
 ```
-./gazebo.sh
+./start.sh
 ```
-run and enter the container shell:
+to start the gazebo simulation, open a shell inside the container and run
 ```
-./exec.sh
+sim
 ```
 ## Kinematics
 the kinematics formulation in the tutorial is wrong. read this [guide](https://ucr-robotics.readthedocs.io/en/latest/tbot/moRbt.html) instead. unfortunately this very guide also has a typo. the correct formulation of a differential robot with 2 wheels is in short: 
@@ -40,15 +40,3 @@ $$
 \dot{\theta} = \omega
 $$
 assume an initial value for each state, then start integrating over time.
-
-### Deprecated
-update codes to container:
-```
-cd src
-/sync.sh 
-```
-update code from container:
-```
-cd src
-/backsync.sh 
-```

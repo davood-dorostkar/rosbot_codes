@@ -6,13 +6,13 @@ is_stopped=$(docker ps -a --filter "name=rosbot_xl" --filter "status=exited" --f
 if [ -n "$is_running" ]; then
     echo "rosbot container is running..."
 
-elif [ -n $is_stopped ]; then
+elif [ -n "$is_stopped" ]; then
     echo "Starting rosbot container..."
-    docker-compose start
+    docker compose start
 
 else    
     echo "Creating rosbot container..."
-    docker-compose up -d
+    docker compose up -d
 fi
  
-xhost local:root && docker-compose exec rosbot_sim bash
+xhost local:root && docker compose exec rosbot_sim /bin/bash

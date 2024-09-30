@@ -22,3 +22,4 @@ RUN chown davood:davood -R /ros2_ws /ros_entrypoint.sh
 USER davood
 RUN echo "source /ros_entrypoint.sh" >> ~/.bashrc
 RUN echo "set +e" >> ~/.bashrc
+RUN echo "alias sim=\"ros2 launch rosbot_xl_gazebo simulation.launch.py mecanum:=${MECANUM:-False} camera_model:=intel_realsense_d435\"" >> ~/.bashrc
