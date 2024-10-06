@@ -10,12 +10,13 @@ RUN apt-get update --fix-missing && apt-get install -y \
     ros-$ROS_DISTRO-teleop-twist-keyboard \
     ros-$ROS_DISTRO-rqt-graph \
     ros-$ROS_DISTRO-rviz2 \
+    ros-$ROS_DISTRO-plotjuggler-ros \
+    ros-$ROS_DISTRO-image-view \
+    ros-$ROS_DISTRO-cv-bridge \
+    libopencv-dev \
     rsync \
     sudo 
-RUN apt-get update && apt-get install -y \
-    ros-$ROS_DISTRO-image-view
-RUN apt-get update && apt-get install -y \
-    libopencv-dev ros-$ROS_DISTRO-cv-bridge
+
 RUN useradd -m -s /bin/bash -G sudo davood
 RUN echo "davood:1234" | chpasswd 
 RUN chown davood:davood -R /ros2_ws /ros_entrypoint.sh

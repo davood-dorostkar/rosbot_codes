@@ -12,6 +12,10 @@ to start the gazebo simulation, open a shell inside the container and run
 ```
 sim
 ```
+to run the second container and enter it
+```
+./client.sh
+```
 ## Kinematics
 the kinematics formulation in the tutorial is wrong. read this [guide](https://ucr-robotics.readthedocs.io/en/latest/tbot/moRbt.html) instead. unfortunately this very guide also has a typo. the correct formulation of a differential robot with 2 wheels is in short: 
 

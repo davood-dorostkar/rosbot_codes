@@ -4,34 +4,40 @@
 
 using namespace std::placeholders;
 
-Tracker::Tracker() : Node("tracker"), isTrackerInitialized(false)
+Tracker::Tracker() : Node("tracker"), _is_tracker_initialized(false)
 {
-    subImage = create_subscription<sensor_msgs::msg::Image>("/image", rclcpp::SensorDataQoS(), std::bind(&Tracker::imageCallback, this, _1));
-    pubVisualization = create_publisher<sensor_msgs::msg::Image>("/visualization", rclcpp::SensorDataQoS());
-    pubVelocity = create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SensorDataQoS());
-    RCLCPP_INFO(get_logger(), "node started.");
+  // Subscribers
+  _img_sub = create_subscription<sensor_msgs::msg::Image>("/image", rclcpp::SensorDataQoS(), bind(&Tracker::_imageCallback, this, _1));
+
+  // Publishers
+  _visualization_pub = create_publisher<sensor_msgs::msg::Image>("/visualization", rclcpp::SensorDataQoS());
+  _vel_pub = create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rclcpp::SystemDefaultsQoS());
+
+  RCLCPP_INFO(get_logger(), "Node started!");
 }
 
-void Tracker::imageCallback(const sensor_msgs::msg::Image::SharedPtr msg)
+void Tracker::_imageCallback(const sensor_msgs::msg::Image::SharedPtr msg)
 {
+  // Convert the image message to an OpenCV Mat
   cv_bridge::CvImagePtr cv_image = cv_bridge::toCvCopy(msg, "bgr8");
   cv::Mat frame = cv_image->image;
   cv::Rect obj;
   geometry_msgs::msg::Twist vel_msg;
 
-  if (!isTrackerInitialized)
+  if (!_is_tracker_initialized)
   {
-    initTracker(frame, obj);
+    _initTracker(frame, obj);
   }
 
-  bool ok = tracker->update(frame, obj);
+  bool ok = _tracker->update(frame, obj);
 
   if (ok) {
     // Calculate angular speed based on the position of the object
-    designateControl(vel_msg, obj, msg->width);
+    _designateControl(vel_msg, obj, msg->width);
     RCLCPP_INFO(get_logger(), "Angular velocity: %0.2f", vel_msg.angular.z);
   }
   else {
+    // Log a warning message if tracking fails and display it on the image
     RCLCPP_WARN(get_logger(), "Tracking failure detected. Stop vehicle!");
     putText(frame, "Tracking failure detected", cv::Point(100, 80), cv::FONT_HERSHEY_SIMPLEX, 0.75, cv::Scalar(0, 0, 255), 2);
   }
@@ -46,17 +52,17 @@ void Tracker::imageCallback(const sensor_msgs::msg::Image::SharedPtr msg)
   _visualization_pub->publish(*img_msg);
 }
 
-void Tracker::initTracker(cv::Mat frame, cv::Rect obj)
+void Tracker::_initTracker(cv::Mat frame, cv::Rect obj)
 {
   obj = selectROI("ROI selector", frame, false);
-  tracker = cv::TrackerKCF::create();
-  tracker->init(frame, obj);
-  isTrackerInitialized = true;
+  _tracker = cv::TrackerKCF::create();
+  _tracker->init(frame, obj);
+  _is_tracker_initialized = true;
   cv::destroyWindow("ROI selector");
   cv::waitKey(1);
 }
 
-void Tracker::designateControl(geometry_msgs::msg::Twist &vel_msg, cv::Rect obj, uint32_t img_width)
+void Tracker::_designateControl(geometry_msgs::msg::Twist &vel_msg, cv::Rect obj, uint32_t img_width)
 {
     int obj_x_center = obj.x + obj.width / 2;
     int px_to_center = img_width / 2 - obj_x_center;
@@ -68,11 +74,12 @@ void Tracker::designateControl(geometry_msgs::msg::Twist &vel_msg, cv::Rect obj,
     }
 }
 
-int main(int argc, char** argv)
+
+int main(int argc, char **argv)
 {
-    rclcpp::init(argc, argv);
-    auto node = std::make_shared<Tracker>();
-    rclcpp::spin(node);
-    rclcpp::shutdown();
-    return 0;
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<Tracker>();
+  rclcpp::spin(node);
+  rclcpp::shutdown();
+  return 0;
 }

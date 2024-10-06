@@ -14,8 +14,8 @@ x-cpu-config:
 
 services:
   rosbot_sim:
-    image: rosbot_sim
-    container_name: rosbot_xl
+    image: rosbot
+    container_name: rosbot_sim
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,3 +27,34 @@ services:
     tty: true
     stdin_open: true
     entrypoint: /bin/bash
+    networks:
+      rosbot_network:
+        ipv4_address: 192.168.32.2
+
+
+  rosbot_client:
+    depends_on: 
+      - rosbot_sim
+    image: rosbot
+    container_name: rosbot_client
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    <<: [*gpu-config]
+    tty: true
+    stdin_open: true
+    entrypoint: /bin/bash
+    networks:
+      rosbot_network:
+        ipv4_address: 192.168.32.3
+    
+
+networks:
+  rosbot_network:
+    name: rosbot_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.32.0/24
